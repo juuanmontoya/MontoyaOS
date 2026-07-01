@@ -1,12 +1,17 @@
 import { HomeGreeting } from "@/components/home/home-greeting";
 import { QuickActions } from "@/components/home/quick-actions";
 import { StatCard } from "@/components/home/stat-card";
-import { getMonthlyExpenses } from "@/lib/services/dashboard";
+import {
+  getMonthlyExpenses,
+  getMonthlyIncome,
+} from "@/lib/services/dashboard";
 import { getLatestTransactions } from "@/lib/services/transactions";
 import { CATEGORY_MAP } from "@/lib/categories";
 
 export default async function HomePage() {
   const monthlyExpenses = await getMonthlyExpenses();
+  const monthlyIncome = await getMonthlyIncome();
+  const availableMoney = monthlyIncome - monthlyExpenses;
   const latestTransactions = await getLatestTransactions();
 
   return (
@@ -17,9 +22,17 @@ export default async function HomePage() {
         aria-label="Resumen del día"
         className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
       >
-        <StatCard title="Dinero disponible" value="$0" />
-        <StatCard title="Ingresos del mes" value="$0" />
         <StatCard
+  title="Dinero disponible"
+  value={`$${availableMoney.toLocaleString("es-CO")}`}
+/>
+
+<StatCard
+  title="Ingresos del mes"
+  value={`$${monthlyIncome.toLocaleString("es-CO")}`}
+/>
+
+<StatCard
   title="Gastos del mes"
   value={`$${monthlyExpenses.toLocaleString("es-CO")}`}
 />
@@ -56,9 +69,16 @@ export default async function HomePage() {
 </p>
         </div>
 
-        <p className="font-semibold">
-          ${Number(transaction.amount).toLocaleString("es-CO")}
-        </p>
+        <p
+  className={`font-semibold ${
+    transaction.type === "income"
+      ? "text-green-600"
+      : "text-red-600"
+  }`}
+>
+  {transaction.type === "income" ? "+" : "-"}$
+  {Number(transaction.amount).toLocaleString("es-CO")}
+</p>
       </div>
     ))}
   </div>

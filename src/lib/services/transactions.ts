@@ -5,17 +5,7 @@ export async function getLatestTransactions() {
 
   const { data, error } = await supabase
   .from("transactions")
-  .select(`
-    id,
-    amount,
-    description,
-    transaction_date,
-    type,
-    category_id,
-    categories (
-      name
-    )
-  `)
+  .select("*")
   .order("transaction_date", { ascending: false })
   .limit(5);
 
@@ -24,6 +14,7 @@ export async function getLatestTransactions() {
     return [];
   }
 
-  console.log(data);
+  console.log("LATEST:", data);
+
   return data;
 }
