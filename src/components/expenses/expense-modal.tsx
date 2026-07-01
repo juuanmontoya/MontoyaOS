@@ -1,5 +1,6 @@
 "use client";
 
+import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 
 import { CurrencyInput } from "@/components/expenses/currency-input";
@@ -47,6 +48,21 @@ const initialFormState = {
   description: "",
 };
 
+const CATEGORY_IDS: Record<string, string> = {
+  "Alimentación": "0e46a1bc-e319-4cb2-8885-120d73c515f3",
+  Familia: "323eba62-80e4-4ded-b43d-5c260e9c1b1d",
+  Viajes: "39ae39c1-19b0-41c3-95e8-adeb6ee95758",
+  Personal: "3b07f8e2-c28e-4659-a57d-c363a467c432",
+  Iglesia: "6bb8a72e-364d-4fe9-ba8f-faca8a96f72c",
+  Trabajo: "7f732ce6-2355-47eb-9ba5-9090ecb38d24",
+  Otros: "8b6eda7d-cfcd-440b-8a09-b8f5c40efd0a",
+  Hogar: "c63cccfc-39d8-49ea-a85b-de217a38fbcf",
+  Regalos: "f5c11d88-a44c-4b65-a744-7023500d9476",
+  Transporte: "fb4462ca-e0d2-4be0-94f5-cb50c796b5b9",
+};
+
+const ACCOUNT_ID = "f44fa376-074a-4cef-9c64-8bafb04a6f4a";
+
 export function ExpenseModal({ open, onOpenChange }: ExpenseModalProps) {
   const { showToast } = useToast();
   const [form, setForm] = useState(initialFormState);
@@ -73,20 +89,45 @@ export function ExpenseModal({ open, onOpenChange }: ExpenseModalProps) {
     return nextErrors;
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const nextErrors = validate();
-    setErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      return;
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+      console.log("🚀 Entró a handleSubmit");
+    
+      event.preventDefault();
+    
+      const nextErrors = validate();
+      setErrors(nextErrors);
+    
+      if (Object.keys(nextErrors).length > 0) {
+        return;
+      }
+    
+      const supabase = createClient();
+    
+      const result = await supabase
+        .from("transactions")
+        .insert({
+          type: "expense",
+          amount: form.amount,
+          category_id: CATEGORY_IDS[form.category],
+          account_id: ACCOUNT_ID,
+          description: form.description,
+          transaction_date: new Date().toISOString(),
+        })
+        .select();
+    
+      console.log("RESULTADO:", result);
+    
+      if (result.error) {
+        console.error(result.error);
+        showToast(result.error.message);
+        return;
+      }
+    
+      console.log("✅ Transacción guardada:", result.data);
+    
+      onOpenChange(false);
+      showToast("Gasto registrado correctamente.");
     }
-
-    onOpenChange(false);
-    showToast("Gasto registrado correctamente.");
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[480px]">
