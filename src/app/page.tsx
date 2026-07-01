@@ -3,6 +3,7 @@ import { QuickActions } from "@/components/home/quick-actions";
 import { StatCard } from "@/components/home/stat-card";
 import { getMonthlyExpenses } from "@/lib/services/dashboard";
 import { getLatestTransactions } from "@/lib/services/transactions";
+import { CATEGORY_MAP } from "@/lib/categories";
 
 export default async function HomePage() {
   const monthlyExpenses = await getMonthlyExpenses();
@@ -40,13 +41,19 @@ export default async function HomePage() {
         className="flex items-center justify-between border-b border-border/40 px-6 py-4 last:border-b-0"
       >
         <div>
-          <p className="font-medium">
-            {transaction.description || transaction.categories?.name}
-          </p>
+        <p className="font-medium">
+  {CATEGORY_MAP[transaction.category_id]?.icon}{" "}
+  {transaction.description ||
+    CATEGORY_MAP[transaction.category_id]?.name ||
+    "Sin descripción"}
+</p>
 
-          <p className="text-sm text-muted-foreground">
-            {new Date(transaction.transaction_date).toLocaleDateString("es-CO")}
-          </p>
+<p className="text-sm text-muted-foreground">
+  {new Date(transaction.transaction_date).toLocaleDateString("es-CO", {
+    day: "numeric",
+    month: "short",
+  })}
+</p>
         </div>
 
         <p className="font-semibold">
