@@ -1,8 +1,11 @@
 import { HomeGreeting } from "@/components/home/home-greeting";
 import { QuickActions } from "@/components/home/quick-actions";
 import { StatCard } from "@/components/home/stat-card";
+import { getMonthlyExpenses } from "@/lib/services/dashboard";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const monthlyExpenses = await getMonthlyExpenses();
+
   return (
     <div className="pb-8">
       <HomeGreeting />
@@ -13,7 +16,10 @@ export default function HomePage() {
       >
         <StatCard title="Dinero disponible" value="$0" />
         <StatCard title="Ingresos del mes" value="$0" />
-        <StatCard title="Gastos del mes" value="$0" />
+        <StatCard
+  title="Gastos del mes"
+  value={`$${monthlyExpenses.toLocaleString("es-CO")}`}
+/>
         <StatCard
           title="Tareas de hoy"
           value="No tienes tareas pendientes"
