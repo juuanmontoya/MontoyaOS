@@ -117,6 +117,7 @@ export function TransactionModal({
       }
     
       const supabase = createClient();
+      const test = supabase.from("transactions");
     
       console.log("Categoría seleccionada:", form.category);
 console.log("Category ID:", CATEGORY_IDS[form.category]);
@@ -129,12 +130,14 @@ const payload = {
     description: form.description,
     transaction_date: new Date().toISOString(),
   };
-  
+  const _: import("@/types/database.types").TablesInsert<"transactions"> = payload;
+
+
   console.log("PAYLOAD:", payload);
   
   const result = await supabase
     .from("transactions")
-    .insert(payload)
+    .insert([payload])
     .select();
     
       console.log("RESULTADO:", result);
