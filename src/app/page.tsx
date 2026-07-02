@@ -57,7 +57,7 @@ export default async function HomePage() {
   <h2 className="mb-4 text-xl font-semibold">Últimos movimientos</h2>
 
   <div className="rounded-3xl border border-border/50 bg-card">
-    {latestTransactions.map((transaction: any) => (
+  {latestTransactions.map((transaction) => (
       <div
         key={transaction.id}
         className="flex items-center justify-between border-b border-border/40 px-6 py-4 last:border-b-0"
