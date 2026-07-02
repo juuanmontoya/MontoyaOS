@@ -1,13 +1,3 @@
-export const EXPENSE_CATEGORIES = [
-  "Alimentación",
-  "Transporte",
-  "Hogar",
-  "Familia",
-  "Trabajo",
-  "Personal",
-  "Otros",
-] as const;
-
 export const PAYMENT_METHODS = [
   "Efectivo",
   "Bancolombia",
@@ -18,12 +8,11 @@ export const PAYMENT_METHODS = [
   "Otro",
 ] as const;
 
-export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 export type ExpenseFormData = {
   amount: number;
-  category: ExpenseCategory;
+  category: string;
   paymentMethod: PaymentMethod;
   description: string;
 };

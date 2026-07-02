@@ -8,6 +8,15 @@ import {
 import { getLatestTransactions } from "@/lib/services/transactions";
 import { CATEGORY_MAP } from "@/lib/categories";
 
+console.log("MAPA IGLESIA:", CATEGORY_MAP["Iglesia"]);
+console.log(
+  "MAPA UUID IGLESIA:",
+  CATEGORY_MAP["6bb8a72e-364d-4fe9-ba8e-faca8a96f72c"]
+);
+
+console.log(CATEGORY_MAP);
+console.log("ICONO TRABAJO:", CATEGORY_MAP["Trabajo"]);
+
 export default async function HomePage() {
   const monthlyExpenses = await getMonthlyExpenses();
   const monthlyIncome = await getMonthlyIncome();
@@ -54,11 +63,11 @@ export default async function HomePage() {
         className="flex items-center justify-between border-b border-border/40 px-6 py-4 last:border-b-0"
       >
         <div>
+    
+
         <p className="font-medium">
-  {CATEGORY_MAP[transaction.category_id]?.icon}{" "}
-  {transaction.description ||
-    CATEGORY_MAP[transaction.category_id]?.name ||
-    "Sin descripción"}
+  {CATEGORY_MAP[transaction.category_name]?.icon ?? "📌"}{" "}
+  {transaction.description || transaction.category_name}
 </p>
 
 <p className="text-sm text-muted-foreground">
